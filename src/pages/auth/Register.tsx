@@ -1,17 +1,21 @@
 import { useState } from "react";
 import { supabase } from "../../auth/supabaseClient";
 
-const Login = () => {
+const Register = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSignIn = async () => {
+  const handleSignUp = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: { role: "STUDENT", name }, // store role & name in Supabase metadata
+        },
       });
 
       if (error) {
@@ -22,9 +26,7 @@ const Login = () => {
       const user = data.user;
       const session = data.session;
 
-      console.log("Signed in:", user);
-
-      // ✅ Ensure user exists in backend
+      // ✅ Send user info to backend
       if (user) {
         await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/create-user`, {
           method: "POST",
@@ -35,30 +37,30 @@ const Login = () => {
           body: JSON.stringify({
             id: user.id,
             email: user.email,
-            name: user.user_metadata?.name || "",
+            name,
             role: user.user_metadata?.role || "STUDENT",
           }),
         });
       }
 
-      alert("Login successful!");
+      alert("Registration successful! Check your email for confirmation.");
     } catch (err) {
-      console.error("Error during login:", err);
-      alert("Login failed.");
+      console.error("Error during signup:", err);
+      alert("Something went wrong.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) alert(error.message);
-    else console.log("User signed out");
-  };
-
   return (
     <div>
-      <h2>Login</h2>
+      <h2>Register</h2>
+      <input
+        type="text"
+        placeholder="Full Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
       <input
         type="email"
         placeholder="Email"
@@ -71,12 +73,11 @@ const Login = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button onClick={handleSignIn} disabled={loading}>
-        {loading ? "Logging in..." : "Sign In"}
+      <button onClick={handleSignUp} disabled={loading}>
+        {loading ? "Creating..." : "Sign Up"}
       </button>
-      <button onClick={handleSignOut}>Sign Out</button>
     </div>
   );
 };
 
-export default Login;
+export default Register;
