@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createBatch } from "../../api/batchApi";
 import { getCourses } from "../../api/courseApi";
-import { getColleg } from "../../api/collegeApi";
+import { getCollege } from "../../api/collegeApi";
 
 const BatchForm = () => {
   const [formData, setFormData] = useState({
@@ -21,7 +21,7 @@ const BatchForm = () => {
     const fetchData = async () => {
       try {
         const [collegeRes, courseRes] = await Promise.all([
-          getColleg(),
+          getCollege(),
           getCourses(),
         ]);
         setColleges(collegeRes.data);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getUniversities } from "../../api/universityApi";
-import { createColleg } from "../../api/collegeApi";
+import { createCollege } from "../../api/collegeApi";
 
 const CollegeForm: React.FC = () => {
   const [universities, setUniversities] = useState<any[]>([]);
@@ -53,7 +53,7 @@ const CollegeForm: React.FC = () => {
         establishedYear: formData.establishedYear ? Number(formData.establishedYear) : null,
       };
 
-      const res = await createColleg(payload);
+      const res = await createCollege(payload);
       setMessage(res.data.message || "✅ College created successfully!");
       setFormData({
         name: "",

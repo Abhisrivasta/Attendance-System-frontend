@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createCourse } from "../../api/courseApi";
-import { getColleg } from "../../api/collegeApi";
+import { getCollege } from "../../api/collegeApi";
 
 const CourseForm = () => {
   const [formData, setFormData] = useState({
@@ -19,7 +19,7 @@ const CourseForm = () => {
     const fetchColleges = async () => {
       setLoading(true);
       try {
-        const res = await getColleg();
+        const res = await getCollege();
         setColleges(res.data);
       } catch (error) {
         console.error("Error fetching colleges:", error);
